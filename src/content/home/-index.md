@@ -2,8 +2,8 @@
 image: "@assets/astrogon-star.svg"
 imageAlt: Astrogon logo
 title: Astrogon
-content: A rapidly-customizable template for a blog, documentation, and more.
+content: AI powered student LMS platform specifically built for FASTIANs
 button:
-  label: See the Code
-  link: https://github.com/astrogon/astrogon
+  label: Download
+  link: /downloads/astrogon.exe
 ---

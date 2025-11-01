@@ -15,6 +15,10 @@ const menu = [
     name: "Authors",
     url: "/authors",
   },
+  {
+    name: "Docs",
+    url: "/docs",
+  },
 ];
 ---
 
@@ -47,7 +51,7 @@ const menu = [
     >
       {
         menu.map((item) => (
-          <li class="">
+          <li>
             <a
               href={item.url}
               class={`block p-2 font-secondary font-semibold text-txt-p transition dark:text-darkmode-txt-p lg:px-2 lg:py-3 ${

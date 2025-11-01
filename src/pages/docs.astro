@@ -1,0 +1,29 @@
+---
+import BaseLayout from "@components/base/BaseLayout.astro";
+import { getEntry, render } from "astro:content";
+
+// Fetch the documentation markdown content
+const docsEntry = await getEntry("docs", "documentation");
+
+if (!docsEntry) {
+  return Astro.redirect("/404");
+}
+
+const { Content } = await render(docsEntry);
+const { title, description } = docsEntry.data;
+---
+
+<BaseLayout
+  title={title || "Documentation"}
+  description={description || "This is the documentation page."}
+>
+  <div class="w-full p-4">
+    <div class="mb-14 mx-auto max-w-4xl">
+      <div class="glass rounded-lg p-8 intersect:animate-fadeUp opacity-0">
+        <article class="prose prose-lg dark:prose-invert max-w-none">
+          <Content />
+        </article>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
