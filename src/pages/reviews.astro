@@ -1,21 +1,5 @@
 ---
 import BaseLayout from "@components/base/BaseLayout.astro";
-<<<<<<< HEAD
-import { getReviews, type Review } from "@lib/turso";
-
-export const prerender = false; // This page needs server-side rendering
-
-// Fetch reviews from Turso database
-let reviews: Review[] = [];
-let error = null;
-
-try {
-  reviews = await getReviews();
-} catch (e) {
-  console.error("Error loading reviews:", e);
-  error = e;
-}
-=======
 import { getEntry, render } from "astro:content";
 
 // Fetch the reviews content
@@ -26,7 +10,6 @@ if (!reviewsEntry) {
 }
 
 const { Content } = await render(reviewsEntry);
->>>>>>> ea362aa (Implement Reviews and Features page)
 ---
 
 <BaseLayout title={"Reviews"} description={"This is the reviews page."}>
@@ -89,42 +72,9 @@ const { Content } = await render(reviewsEntry);
 
       <!-- Display Reviews -->
       <div class="glass rounded-lg p-8 intersect:animate-fadeUp opacity-0">
-<<<<<<< HEAD
-        <h2 class="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-          User Reviews
-        </h2>
-        <div id="reviews-container" class="space-y-6">
-          {
-            error ? (
-              <p class="text-red-600 dark:text-red-400">
-                Error loading reviews. Please try again later.
-              </p>
-            ) : reviews.length === 0 ? (
-              <p class="text-gray-600 dark:text-gray-400 italic">
-                No reviews yet. Be the first to share your thoughts!
-              </p>
-            ) : (
-              reviews.map((review) => (
-                <div class="border-b border-gray-200 dark:border-gray-700 pb-6 last:border-b-0">
-                  <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-                    {review.name}
-                  </h3>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                    {review.timestamp}
-                  </p>
-                  <p class="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                    {review.review}
-                  </p>
-                </div>
-              ))
-            )
-          }
-        </div>
-=======
         <article class="prose prose-lg dark:prose-invert max-w-none">
           <Content />
         </article>
->>>>>>> ea362aa (Implement Reviews and Features page)
       </div>
     </div>
   </div>
@@ -142,19 +92,6 @@ const { Content } = await render(reviewsEntry);
       'button[type="submit"]'
     ) as HTMLButtonElement;
 
-<<<<<<< HEAD
-    const name = formData.get("name") as string;
-    const review = formData.get("review") as string;
-
-    if (!name || !review) {
-      messageEl.textContent = "Please fill in all fields";
-      messageEl.className =
-        "text-sm font-medium text-red-600 dark:text-red-400";
-      return;
-    }
-
-=======
->>>>>>> ea362aa (Implement Reviews and Features page)
     // Disable submit button and show loading state
     submitButton.disabled = true;
     submitButton.textContent = "Submitting...";
@@ -168,13 +105,8 @@ const { Content } = await render(reviewsEntry);
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-<<<<<<< HEAD
-          name: name.trim(),
-          review: review.trim(),
-=======
           name: formData.get("name"),
           review: formData.get("review"),
->>>>>>> ea362aa (Implement Reviews and Features page)
         }),
       });
 
@@ -186,17 +118,10 @@ const { Content } = await render(reviewsEntry);
           "text-sm font-medium text-green-600 dark:text-green-400";
         form.reset();
 
-<<<<<<< HEAD
-        // Reload the page to show the new review
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-=======
         // Reload the page after a short delay to show the new review
         setTimeout(() => {
           window.location.reload();
         }, 1500);
->>>>>>> ea362aa (Implement Reviews and Features page)
       } else {
         messageEl.textContent = data.error || "Failed to submit review";
         messageEl.className =
