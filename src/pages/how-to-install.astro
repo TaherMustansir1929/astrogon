@@ -1,0 +1,61 @@
+---
+import BaseLayout from "@components/base/BaseLayout.astro";
+import { Image } from "astro:assets";
+import ss1 from "@/assets/ss/1.png";
+import ss2 from "@/assets/ss/2.png";
+import ss3 from "@/assets/ss/3.png";
+import ss4 from "@/assets/ss/4.png";
+import ss5 from "@/assets/ss/5.png";
+import ss6 from "@/assets/ss/6.png";
+import ss7 from "@/assets/ss/7.png";
+
+const ssList = [
+  { label: "Click on the download button on the home page", src: ss1 },
+  { label: "Download the folder on your computer", src: ss2 },
+  { label: "Navigate to the downloaded folder and unzip it", src: ss3 },
+  {
+    label: "Open the unzipped folder, find and run the `astrogon.exe` file",
+    src: ss4,
+  },
+  {
+    label:
+      "Don't worry we are not stealing your personal data. Hit `Run Anyway` and pray it works...",
+    src: ss5,
+  },
+  {
+    label: "Login using your FAST student ID and create a password",
+    src: ss6,
+  },
+  { label: "Enjoy exploring Astrogon!", src: ss7 },
+];
+---
+
+<BaseLayout
+  title={"How to Install Astrogon"}
+  description={"This is the installation guide page."}
+>
+  <div class="w-full p-4">
+    <div class="mb-14 mx-auto max-w-4xl">
+      <div class="glass rounded-lg p-8 intersect:animate-fadeUp opacity-0">
+        <article class="prose prose-lg dark:prose-invert max-w-none">
+          {
+            ssList.map((step, index) => (
+              <>
+                <h3>
+                  Step {index + 1}:{" "}
+                  <span class="font-normal">{step.label}</span>
+                </h3>
+                <Image
+                  src={step.src}
+                  alt={`Step ${index + 1} Screenshot`}
+                  class="mx-auto mb-6 rounded"
+                  loading="eager"
+                />
+              </>
+            ))
+          }
+        </article>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
