@@ -56,5 +56,8 @@ dist/
 .output/
 .json/
 
+# Compiled TypeScript files (should not be committed)
+src/lib/turso.js
+
 # Wrangler output
 .wrangler/
