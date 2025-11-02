@@ -4,6 +4,33 @@ import { db } from "@/db/index";
 import { reviews } from "@/db/schema";
 import { desc } from "drizzle-orm";
 
+export const prerender = false;
+
+// Handle form submission
+if (Astro.request.method === "POST") {
+  try {
+    const formData = await Astro.request.formData();
+    const name = formData.get("name")?.toString();
+    const review = formData.get("review")?.toString();
+
+    if (name && review) {
+      const timestamp = new Date().toISOString();
+      const createdAt = Date.now();
+
+      await db.insert(reviews).values({
+        name,
+        review,
+        timestamp,
+        createdAt,
+      });
+
+      return Astro.redirect("/reviews");
+    }
+  } catch (error) {
+    console.error("Error submitting review:", error);
+  }
+}
+
 const allReviews = await db
   .select()
   .from(reviews)
@@ -28,7 +55,7 @@ const allReviews = await db
         <h2 class="text-2xl font-bold mb-6 text-txt-p dark:text-darkmode-txt-p">
           Submit Your Review
         </h2>
-        <form id="review-form" class="space-y-4">
+        <form id="review-form" method="POST" class="space-y-4">
           <div>
             <label
               for="name"
@@ -60,7 +87,6 @@ const allReviews = await db
               class="w-full px-4 py-2 glass-t rounded-md text-txt-p dark:text-darkmode-txt-p placeholder:text-txt-light dark:placeholder:text-darkmode-txt-light focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200 resize-none"
               placeholder="Share your experience..."></textarea>
           </div>
-          <div id="form-message" class="hidden text-sm"></div>
           <button
             type="submit"
             class="glass-t px-6 py-3 rounded-md font-bold text-txt-p dark:text-darkmode-txt-p hover:bg-opacity-40 hover:backdrop-blur-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -110,65 +136,14 @@ const allReviews = await db
 </BaseLayout>
 
 <script>
+  // Optional: Add a loading state to the submit button
   const form = document.getElementById("review-form") as HTMLFormElement;
-  const formMessage = document.getElementById("form-message");
-  const reviewsList = document.getElementById("reviews-list");
 
-  form?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  form?.addEventListener("submit", (e) => {
     const submitButton = form.querySelector(
       'button[type="submit"]'
     ) as HTMLButtonElement;
     submitButton.disabled = true;
     submitButton.textContent = "Submitting...";
-
-    const formData = new FormData(form);
-    const name = formData.get("name") as string;
-    const review = formData.get("review") as string;
-
-    try {
-      const response = await fetch("/api/reviews", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, review }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // Show success message
-        if (formMessage) {
-          formMessage.textContent = "Review submitted successfully!";
-          formMessage.className =
-            "text-sm text-green-600 dark:text-green-400 p-3 glass-t rounded";
-          formMessage.classList.remove("hidden");
-        }
-
-        // Reset form
-        form.reset();
-
-        // Reload the page to show new review
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-      } else {
-        throw new Error(data.error || "Failed to submit review");
-      }
-    } catch (error) {
-      if (formMessage) {
-        formMessage.textContent =
-          error instanceof Error
-            ? error.message
-            : "An error occurred. Please try again.";
-        formMessage.className =
-          "text-sm text-red-600 dark:text-red-400 p-3 glass-t rounded";
-        formMessage.classList.remove("hidden");
-      }
-    } finally {
-      submitButton.disabled = false;
-      submitButton.textContent = "Submit Review";
-    }
   });
 </script>
