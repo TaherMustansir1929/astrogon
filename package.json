@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "build:static": "astro build && pagefind --site dist",
-    "format": "prettier -w ./src"
+    "format": "prettier -w ./src",
+    "db:migrate": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.10",
@@ -27,6 +28,7 @@
     "date-fns": "^2.30.0",
     "date-fns-tz": "^2.0.0",
     "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.36.0",
     "fuse.js": "^6.6.2",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
@@ -55,6 +57,7 @@
     "@types/react": "18.2.18",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "^10.4.14",
+    "drizzle-kit": "^0.31.6",
     "eslint": "^8.46.0",
     "pagefind": "^1.0.4",
     "postcss": "^8.4.27",
