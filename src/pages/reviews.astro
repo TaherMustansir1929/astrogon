@@ -1,0 +1,174 @@
+---
+import BaseLayout from "@components/base/BaseLayout.astro";
+import { db } from "@/db/index";
+import { reviews } from "@/db/schema";
+import { desc } from "drizzle-orm";
+
+const allReviews = await db
+  .select()
+  .from(reviews)
+  .orderBy(desc(reviews.createdAt));
+---
+
+<BaseLayout title={"Reviews"} description={"Share your review with us."}>
+  <div class="w-full p-4">
+    <div class="mb-14 mx-auto max-w-4xl">
+      <!-- Page Header -->
+      <div class="glass rounded-lg p-8 mb-8 intersect:animate-fadeUp opacity-0">
+        <h1 class="text-4xl font-bold mb-4 text-txt-p dark:text-darkmode-txt-p">
+          User Reviews
+        </h1>
+        <p class="text-txt-s dark:text-darkmode-txt-s">
+          Share your thoughts and feedback with us!
+        </p>
+      </div>
+
+      <!-- Review Form -->
+      <div class="glass rounded-lg p-8 mb-8 intersect:animate-fadeUp opacity-0">
+        <h2 class="text-2xl font-bold mb-6 text-txt-p dark:text-darkmode-txt-p">
+          Submit Your Review
+        </h2>
+        <form id="review-form" class="space-y-4">
+          <div>
+            <label
+              for="name"
+              class="block text-sm font-medium mb-2 text-txt-s dark:text-darkmode-txt-s"
+            >
+              Your Name
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class="w-full px-4 py-2 glass-t rounded-md text-txt-p dark:text-darkmode-txt-p placeholder:text-txt-light dark:placeholder:text-darkmode-txt-light focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div>
+            <label
+              for="review"
+              class="block text-sm font-medium mb-2 text-txt-s dark:text-darkmode-txt-s"
+            >
+              Your Review
+            </label>
+            <textarea
+              id="review"
+              name="review"
+              rows="5"
+              required
+              class="w-full px-4 py-2 glass-t rounded-md text-txt-p dark:text-darkmode-txt-p placeholder:text-txt-light dark:placeholder:text-darkmode-txt-light focus:outline-none focus:ring-2 focus:ring-opacity-50 transition-all duration-200 resize-none"
+              placeholder="Share your experience..."></textarea>
+          </div>
+          <div id="form-message" class="hidden text-sm"></div>
+          <button
+            type="submit"
+            class="glass-t px-6 py-3 rounded-md font-bold text-txt-p dark:text-darkmode-txt-p hover:bg-opacity-40 hover:backdrop-blur-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Submit Review
+          </button>
+        </form>
+      </div>
+
+      <!-- Reviews List -->
+      <div class="glass rounded-lg p-8 intersect:animate-fadeUp opacity-0">
+        <h2 class="text-2xl font-bold mb-6 text-txt-p dark:text-darkmode-txt-p">
+          Recent Reviews ({allReviews.length})
+        </h2>
+        <div id="reviews-list" class="space-y-4">
+          {
+            allReviews.length === 0 ? (
+              <p class="text-center text-txt-s dark:text-darkmode-txt-s py-8">
+                No reviews yet. Be the first to share your thoughts!
+              </p>
+            ) : (
+              allReviews.map((review) => (
+                <div class="glass-t rounded-lg p-6 hover:bg-opacity-30 transition-all duration-200">
+                  <div class="flex items-start justify-between mb-3">
+                    <h3 class="font-bold text-lg text-txt-p dark:text-darkmode-txt-p">
+                      {review.name}
+                    </h3>
+                    <span class="text-sm text-txt-light dark:text-darkmode-txt-light">
+                      {new Date(review.timestamp!).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </div>
+                  <p class="text-txt-s dark:text-darkmode-txt-s leading-relaxed">
+                    {review.review}
+                  </p>
+                </div>
+              ))
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById("review-form") as HTMLFormElement;
+  const formMessage = document.getElementById("form-message");
+  const reviewsList = document.getElementById("reviews-list");
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const submitButton = form.querySelector(
+      'button[type="submit"]'
+    ) as HTMLButtonElement;
+    submitButton.disabled = true;
+    submitButton.textContent = "Submitting...";
+
+    const formData = new FormData(form);
+    const name = formData.get("name") as string;
+    const review = formData.get("review") as string;
+
+    try {
+      const response = await fetch("/api/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, review }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Show success message
+        if (formMessage) {
+          formMessage.textContent = "Review submitted successfully!";
+          formMessage.className =
+            "text-sm text-green-600 dark:text-green-400 p-3 glass-t rounded";
+          formMessage.classList.remove("hidden");
+        }
+
+        // Reset form
+        form.reset();
+
+        // Reload the page to show new review
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        throw new Error(data.error || "Failed to submit review");
+      }
+    } catch (error) {
+      if (formMessage) {
+        formMessage.textContent =
+          error instanceof Error
+            ? error.message
+            : "An error occurred. Please try again.";
+        formMessage.className =
+          "text-sm text-red-600 dark:text-red-400 p-3 glass-t rounded";
+        formMessage.classList.remove("hidden");
+      }
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Submit Review";
+    }
+  });
+</script>
