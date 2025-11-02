@@ -8,10 +8,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "postbuild": "pagefind --site dist",
+    "build:static": "astro build && pagefind --site dist",
     "format": "prettier -w ./src"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.10",
     "@astrojs/mdx": "^4.3.4",
     "@astrojs/react": "^4.3.0",
     "@astrojs/rss": "^4.0.12",

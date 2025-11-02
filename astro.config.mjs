@@ -8,12 +8,18 @@ import remarkCollapse from "remark-collapse";
 import remarkToc from "remark-toc";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
+import cloudflare from "@astrojs/cloudflare";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://janedoe.com",
   base: "/",
   output: "server", // Enable server-side rendering
+  adapter: cloudflare({
+    platformProxy: {
+      enabled: true,
+    },
+  }),
   trailingSlash: "ignore",
   prefetch: {
     prefetchAll: true

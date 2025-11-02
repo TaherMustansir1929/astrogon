@@ -1,4 +1,4 @@
-import { createClient, type Client } from "@libsql/client";
+import { createClient, type Client } from "@libsql/client/web";
 
 // Review type
 export interface Review {
@@ -17,7 +17,7 @@ function getTursoClient(): Client {
     return tursoClient;
   }
 
-  // Get environment variables - Astro runtime
+  // Get environment variables - works in both Astro and Cloudflare runtime
   const url = import.meta.env.TURSO_DATABASE_URL;
   const authToken = import.meta.env.TURSO_AUTH_TOKEN;
 
@@ -29,7 +29,7 @@ function getTursoClient(): Client {
     throw new Error("TURSO_AUTH_TOKEN environment variable is not set");
   }
 
-  // Create and cache the Turso client
+  // Create and cache the Turso client (web version for Cloudflare compatibility)
   tursoClient = createClient({
     url,
     authToken,
