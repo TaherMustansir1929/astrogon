@@ -8,5 +8,5 @@ social:
   linkedIn: "https://www.linkedin.com/in/taher-mustansir-aa6340381/"
 ---
 
-Segfault Sage – speaks fluent crash logs \
-Talks to code as if it listens (sometimes it does).
+Vanishing Employee – seen only in payroll records. \
+Once fixed a bug by adding a semicolon.
